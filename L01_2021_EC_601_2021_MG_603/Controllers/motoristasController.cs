@@ -7,50 +7,53 @@ namespace MiApiRestaurante.Models
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MotoristasController : ControllerBase
+    public class motoristasController : ControllerBase
     {
-        private static List<Motorista> motoristas = new List<Motorista>();
+        private static List<motoristas> motoristas = new List<motoristas>();
 
         [HttpGet]
-        public ActionResult<IEnumerable<Motorista>> GetMotoristas() => motoristas;
+        public ActionResult<IEnumerable<motoristas>> Getmotoristas() => motoristas;
 
         [HttpGet("{id}")]
-        public ActionResult<Motorista> GetMotorista(int id)
+        public ActionResult<motoristas> Getmotoristas(int id)
         {
-            var motorista = motoristas.FirstOrDefault(m => m.Id == id);
-            if (motorista == null) return NotFound();
-            return motorista;
+            var motoristas = motoristas.FirstOrDefault(m => m.Id == id);
+            if (motoristas == null) return NotFound();
+            return motoristas;
         }
 
         [HttpPost]
-        public ActionResult<Motorista> CreateMotorista(Motorista motorista)
+        public ActionResult<motoristas> Createmotoristas(motoristas motoristas)
         {
-            motoristas.Add(motorista);
-            return CreatedAtAction(nameof(GetMotorista), new { id = motorista.Id }, motorista);
+            motoristas.Add(motoristas);
+            return CreatedAtAction(nameof(Getmotoristas), new { id = motoristas.Id }, motoristas);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateMotorista(int id, Motorista motorista)
+        public IActionResult Updatemotoristas(int id, motoristas motoristas)
         {
             var existing = motoristas.FirstOrDefault(m => m.Id == id);
             if (existing == null) return NotFound();
 
-            existing.Nombre = motorista.Nombre;
-            existing.Telefono = motorista.Telefono;
+            existing.Nombre = motoristas.Nombre;
+            existing.Telefono = motoristas.Telefono;
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteMotorista(int id)
+        public IActionResult Deletemotoristas(int id)
         {
-            var motorista = motoristas.FirstOrDefault(m => m.Id == id);
-            if (motorista == null) return NotFound();
+            var motoristas = motoristas.FirstOrDefault(m => m.Id == id);
+            if (motoristas == null) return NotFound();
 
-            motoristas.Remove(motorista);
+            motoristas.Remove(motoristas);
             return NoContent();
         }
 
         [HttpGet("filtrarPorNombre/{nombre}")]
-        public ActionResult<IEnumerable<Motorista>> GetMotoristasPorNombre(string nombre) =>
+        public ActionResult<IEnumerable<motoristas>> GetmotoristasPorNombre(string nombre) =>
             motoristas.Where(m => m.Nombre.Contains(nombre)).ToList();
+    }
+}
+
