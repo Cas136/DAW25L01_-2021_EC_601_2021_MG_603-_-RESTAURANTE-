@@ -1,3 +1,4 @@
+using L01_2021_EC_601_2021_MG_603.Models;
 using MiApiRestaurante.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -7,53 +8,57 @@ namespace MiApiRestaurante.Models
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class motoristasController : ControllerBase
+    public class MotoristasController : ControllerBase
     {
-        private static List<motoristas> motoristas = new List<motoristas>();
+        // Renombrada la lista para evitar conflictos con el nombre de la clase
+        private static List<motoristas> _motoristasList = new List<motoristas>();
 
         [HttpGet]
-        public ActionResult<IEnumerable<motoristas>> Getmotoristas() => motoristas;
+        public ActionResult<IEnumerable<motoristas>> GetMotoristas() => _motoristasList;
 
         [HttpGet("{id}")]
-        public ActionResult<motoristas> Getmotoristas(int id)
+        public ActionResult<motoristas> GetMotorista(int id)
         {
-            var motoristas = motoristas.FirstOrDefault(m => m.Id == id);
-            if (motoristas == null) return NotFound();
-            return motoristas;
+            var motorista = _motoristasList.FirstOrDefault(m => m.motoristaId == id);
+            if (motorista == null)
+                return NotFound();
+            return motorista;
         }
 
         [HttpPost]
-        public ActionResult<motoristas> Createmotoristas(motoristas motoristas)
+        public ActionResult<motoristas> CreateMotorista(motoristas nuevoMotorista)
         {
-            motoristas.Add(motoristas);
-            return CreatedAtAction(nameof(Getmotoristas), new { id = motoristas.Id }, motoristas);
+            _motoristasList.Add(nuevoMotorista);
+            return CreatedAtAction(nameof(GetMotorista), new { id = nuevoMotorista.motoristaId }, nuevoMotorista);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Updatemotoristas(int id, motoristas motoristas)
+        public IActionResult UpdateMotorista(int id, motoristas updatedMotorista)
         {
-            var existing = motoristas.FirstOrDefault(m => m.Id == id);
-            if (existing == null) return NotFound();
+            var existingMotorista = _motoristasList.FirstOrDefault(m => m.motoristaId == id);
+            if (existingMotorista == null)
+                return NotFound();
 
-            existing.Nombre = motoristas.Nombre;
-            existing.Telefono = motoristas.Telefono;
-
+            // Actualizamos la propiedad existente
+            existingMotorista.nombreMotorista = updatedMotorista.nombreMotorista;
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Deletemotoristas(int id)
+        public IActionResult DeleteMotorista(int id)
         {
-            var motoristas = motoristas.FirstOrDefault(m => m.Id == id);
-            if (motoristas == null) return NotFound();
+            var motoristaToDelete = _motoristasList.FirstOrDefault(m => m.motoristaId == id);
+            if (motoristaToDelete == null)
+                return NotFound();
 
-            motoristas.Remove(motoristas);
+            _motoristasList.Remove(motoristaToDelete);
             return NoContent();
         }
 
         [HttpGet("filtrarPorNombre/{nombre}")]
-        public ActionResult<IEnumerable<motoristas>> GetmotoristasPorNombre(string nombre) =>
-            motoristas.Where(m => m.Nombre.Contains(nombre)).ToList();
+        public ActionResult<IEnumerable<motoristas>> GetMotoristasPorNombre(string nombre) =>
+            _motoristasList.Where(m => m.nombreMotorista.Contains(nombre)).ToList();
     }
 }
+
 
