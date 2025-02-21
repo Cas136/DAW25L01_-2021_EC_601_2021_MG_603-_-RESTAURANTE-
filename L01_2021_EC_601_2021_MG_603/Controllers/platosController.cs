@@ -1,3 +1,4 @@
+using L01_2021_EC_601_2021_MG_603.Models;
 using MiApiRestaurante.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -7,52 +8,55 @@ namespace MiApiRestaurante.Models
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class platosController : ControllerBase
+    public class PlatosController : ControllerBase
     {
-        private static List<platos> platos = new List<platos>();
+        private static List<platos> _platosList = new List<platos>();
 
         [HttpGet]
-        public ActionResult<IEnumerable<Plato>> Getplatos() => platos;
+        public ActionResult<IEnumerable<platos>> GetPlatos() => _platosList;
 
         [HttpGet("{id}")]
-        public ActionResult<platos> Getplatos(int id)
+        public ActionResult<platos> GetPlato(int id)
         {
-            var plato = platos.FirstOrDefault(p => p.Id == id);
-            if (platos == null) return NotFound();
-            return platos;
+            var plato = _platosList.FirstOrDefault(p => p.platoId == id);
+            if (plato == null)
+                return NotFound();
+            return plato;
         }
 
         [HttpPost]
-        public ActionResult<platos> Createplatos(platos platos)
+        public ActionResult<platos> CreatePlato(platos nuevoPlato)
         {
-            platos.Add(platos);
-            return CreatedAtAction(nameof(Getplatos), new { id = platos.Id }, platos);
+            _platosList.Add(nuevoPlato);
+            return CreatedAtAction(nameof(GetPlato), new { id = nuevoPlato.platoId }, nuevoPlato);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Updateplatos(int id, platos platos)
+        public IActionResult UpdatePlato(int id, platos platoActualizado)
         {
-            var existing = platos.FirstOrDefault(p => p.Id == id);
-            if (existing == null) return NotFound();
+            var existing = _platosList.FirstOrDefault(p => p.platoId == id);
+            if (existing == null)
+                return NotFound();
 
-            existing.Nombre = platos.Nombre;
-            existing.Precio = platos.Precio;
+            existing.nombrePlato = platoActualizado.nombrePlato;
+            existing.precio = platoActualizado.precio;
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Deleteplatos(int id)
+        public IActionResult DeletePlato(int id)
         {
-            var plato = platos.FirstOrDefault(p => p.Id == id);
-            if (platos == null) return NotFound();
+            var plato = _platosList.FirstOrDefault(p => p.platoId == id);
+            if (plato == null)
+                return NotFound();
 
-            platos.Remove(platos);
+            _platosList.Remove(plato);
             return NoContent();
         }
 
         [HttpGet("filtrarPorPrecio/{precio}")]
-        public ActionResult<IEnumerable<platos>> GetplatosPorPrecio(decimal precio) =>
-            platos.Where(p => p.Precio < precio).ToList();
+        public ActionResult<IEnumerable<platos>> GetPlatosPorPrecio(decimal precio) =>
+            _platosList.Where(p => p.precio < precio).ToList();
     }
 }
