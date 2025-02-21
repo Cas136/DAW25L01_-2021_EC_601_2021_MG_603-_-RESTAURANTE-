@@ -1,36 +1,58 @@
-﻿using Microsoft.AspNetCore.Http;
+using MiApiRestaurante.Models;
 using Microsoft.AspNetCore.Mvc;
-using L01_2021_EC_601_2021_MG_603.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace L01_2021_EC_601_2021_MG_603.Controllers
+namespace MiApiRestaurante.Models
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class platosController : ControllerBase
+    public class PlatosController : ControllerBase
     {
-        private readonly restauranteContext _restauranteContexto;
-
-        public platosController(restauranteContext restauranteContexto)
-        {
-            _restauranteContexto = restauranteContexto;
-        }
+        private static List<Plato> platos = new List<Plato>();
 
         [HttpGet]
-        [Route("GetAll")]
-        public IActionResult Get()
+        public ActionResult<IEnumerable<Plato>> GetPlatos() => platos;
+
+        [HttpGet("{id}")]
+        public ActionResult<Plato> GetPlato(int id)
         {
-            List<platos> listadoPlatos = (from p in _restauranteContexto.platos
-                                          select p).ToList();
-
-            if (listadoPlatos.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return Ok(listadoPlatos);
+            var plato = platos.FirstOrDefault(p => p.Id == id);
+            if (plato == null) return NotFound();
+            return plato;
         }
+
+        [HttpPost]
+        public ActionResult<Plato> CreatePlato(Plato plato)
+        {
+            platos.Add(plato);
+            return CreatedAtAction(nameof(GetPlato), new { id = plato.Id }, plato);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdatePlato(int id, Plato plato)
+        {
+            var existing = platos.FirstOrDefault(p => p.Id == id);
+            if (existing == null) return NotFound();
+
+            existing.Nombre = plato.Nombre;
+            existing.Precio = plato.Precio;
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeletePlato(int id)
+        {
+            var plato = platos.FirstOrDefault(p => p.Id == id);
+            if (plato == null) return NotFound();
+
+            platos.Remove(plato);
+            return NoContent();
+        }
+
+        [HttpGet("filtrarPorPrecio/{precio}")]
+        public ActionResult<IEnumerable<Plato>> GetPlatosPorPrecio(decimal precio) =>
+            platos.Where(p => p.Precio < precio).ToList();
     }
 }
