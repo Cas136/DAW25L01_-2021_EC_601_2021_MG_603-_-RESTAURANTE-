@@ -1,3 +1,4 @@
+using L01_2021_EC_601_2021_MG_603.Models;
 using MiApiRestaurante.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -7,58 +8,64 @@ namespace MiApiRestaurante.Models
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class pedidosController : ControllerBase
+    public class PedidosController : ControllerBase
     {
-        private static List<pedidos> pedidos = new List<pedidos>();
+        // Lista estática para almacenar los pedidos
+        private static List<pedidos> _pedidosList = new List<pedidos>();
 
         [HttpGet]
-        public ActionResult<IEnumerable<pedidos>> Getpedidos() => pedidos;
+        public ActionResult<IEnumerable<pedidos>> GetPedidos() => _pedidosList;
 
         [HttpGet("{id}")]
-        public ActionResult<pedidos> Getpedidos(int id)
+        public ActionResult<pedidos> GetPedido(int id)
         {
-            var pedidos = pedidos.FirstOrDefault(p => p.Id == id);
-            if (pedidos == null) return NotFound();
-            return pedidos;
+            var pedido = _pedidosList.FirstOrDefault(p => p.pedidoId == id);
+            if (pedido == null)
+                return NotFound();
+            return pedido;
         }
 
         [HttpPost]
-        public ActionResult<pedidos> Createpedidos(pedidos pedidos)
+        public ActionResult<pedidos> CreatePedido(pedidos nuevoPedido)
         {
-            pedidos.Add(pedidos);
-            return CreatedAtAction(nameof(Getpedidos), new { id = pedidos.Id }, pedidos);
+            _pedidosList.Add(nuevoPedido);
+            return CreatedAtAction(nameof(GetPedido), new { id = nuevoPedido.pedidoId }, nuevoPedido);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Updatepedidos(int id, pedidos pedidos)
+        public IActionResult UpdatePedido(int id, pedidos pedidoActualizado)
         {
-            var existing = pedidos.FirstOrDefault(p => p.Id == id);
-            if (existing == null) return NotFound();
+            var existing = _pedidosList.FirstOrDefault(p => p.pedidoId == id);
+            if (existing == null)
+                return NotFound();
 
-            existing.ClienteId = pedidos.ClienteId;
-            existing.MotoristaId = pedidos.MotoristaId;
-            existing.Fecha = pedidos.Fecha;
-            existing.Total = pedidos.Total;
+            // Actualizamos las propiedades existentes
+            existing.motoristaId = pedidoActualizado.motoristaId;
+            existing.clienteId = pedidoActualizado.clienteId;
+            existing.platoId = pedidoActualizado.platoId;
+            existing.cantidad = pedidoActualizado.cantidad;
+            existing.precio = pedidoActualizado.precio;
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Deletepedidos(int id)
+        public IActionResult DeletePedido(int id)
         {
-            var pedidos = pedidos.FirstOrDefault(p => p.Id == id);
-            if (pedidos == null) return NotFound();
+            var pedido = _pedidosList.FirstOrDefault(p => p.pedidoId == id);
+            if (pedido == null)
+                return NotFound();
 
-            pedidos.Remove(pedidos);
+            _pedidosList.Remove(pedido);
             return NoContent();
         }
 
         [HttpGet("cliente/{clienteId}")]
-        public ActionResult<IEnumerable<pedidos>> GetpedidosPorCliente(int clienteId) =>
-            pedidos.Where(p => p.ClienteId == clienteId).ToList();
+        public ActionResult<IEnumerable<pedidos>> GetPedidosPorCliente(int clienteId) =>
+            _pedidosList.Where(p => p.clienteId == clienteId).ToList();
 
         [HttpGet("motorista/{motoristaId}")]
-        public ActionResult<IEnumerable<pedidos>> GetpedidosPorMotorista(int motoristaId) =>
-            pedidos.Where(p => p.MotoristaId == motoristaId).ToList();
+        public ActionResult<IEnumerable<pedidos>> GetPedidosPorMotorista(int motoristaId) =>
+            _pedidosList.Where(p => p.motoristaId == motoristaId).ToList();
     }
 }
