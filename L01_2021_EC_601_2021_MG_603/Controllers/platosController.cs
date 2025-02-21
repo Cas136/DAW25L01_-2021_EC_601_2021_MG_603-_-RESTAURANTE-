@@ -7,52 +7,52 @@ namespace MiApiRestaurante.Models
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlatosController : ControllerBase
+    public class platosController : ControllerBase
     {
-        private static List<Plato> platos = new List<Plato>();
+        private static List<platos> platos = new List<platos>();
 
         [HttpGet]
-        public ActionResult<IEnumerable<Plato>> GetPlatos() => platos;
+        public ActionResult<IEnumerable<Plato>> Getplatos() => platos;
 
         [HttpGet("{id}")]
-        public ActionResult<Plato> GetPlato(int id)
+        public ActionResult<platos> Getplatos(int id)
         {
             var plato = platos.FirstOrDefault(p => p.Id == id);
-            if (plato == null) return NotFound();
-            return plato;
+            if (platos == null) return NotFound();
+            return platos;
         }
 
         [HttpPost]
-        public ActionResult<Plato> CreatePlato(Plato plato)
+        public ActionResult<platos> Createplatos(platos platos)
         {
-            platos.Add(plato);
-            return CreatedAtAction(nameof(GetPlato), new { id = plato.Id }, plato);
+            platos.Add(platos);
+            return CreatedAtAction(nameof(Getplatos), new { id = platos.Id }, platos);
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdatePlato(int id, Plato plato)
+        public IActionResult Updateplatos(int id, platos platos)
         {
             var existing = platos.FirstOrDefault(p => p.Id == id);
             if (existing == null) return NotFound();
 
-            existing.Nombre = plato.Nombre;
-            existing.Precio = plato.Precio;
+            existing.Nombre = platos.Nombre;
+            existing.Precio = platos.Precio;
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeletePlato(int id)
+        public IActionResult Deleteplatos(int id)
         {
             var plato = platos.FirstOrDefault(p => p.Id == id);
-            if (plato == null) return NotFound();
+            if (platos == null) return NotFound();
 
-            platos.Remove(plato);
+            platos.Remove(platos);
             return NoContent();
         }
 
         [HttpGet("filtrarPorPrecio/{precio}")]
-        public ActionResult<IEnumerable<Plato>> GetPlatosPorPrecio(decimal precio) =>
+        public ActionResult<IEnumerable<platos>> GetplatosPorPrecio(decimal precio) =>
             platos.Where(p => p.Precio < precio).ToList();
     }
 }
